@@ -1,4 +1,28 @@
-# otus-homework
-Software architect course
+# homework 01
+**Основы работы с Kubernetes**
 
-All homework will be done in branches with prefixes **HWA-[number]** (like contraction from *"homework architect"*)
+Создать минимальный сервис, который
+1. отвечает на порту *8000*
+1. имеет http-метод
+`GET /health/
+RESPONSE: {"status": "OK"}`
+
+Cобрать локально образ приложения в докер.
+Запушить образ в *dockerhub*
+
+Написать манифесты для деплоя в *k8s* для этого сервиса.
+
+Манифесты должны описывать сущности:
+* Deployment
+* Service 
+* Ingress
+В Deployment обязательно должны быть указаны _Liveness_, _Readiness_ пробы.
+Количество реплик должно быть не меньше 2. Image контейнера должен быть указан с Dockerhub.
+
+В _Ingress_ должно быть правило, которое форвардит все запросы с `/otusapp/{student name}/*` на сервис с rewrite-ом пути. Где `{student name}` - это имя студента.
+
+Хост в ингрессе должен быть *arch.homework*. В итоге после применения манифестов GET запрос на `http://arch.homework/otusapp/{student name}/health` должен отдавать `{“status”: “OK”}`.
+
+На выходе предоставить
+1. ссылку на *github* c манифестами. Манифесты должны лежать в одной директории, так чтобы можно было их все применить одной командой `kubectl apply -f .`
+1. url, по которому можно будет получить ответ от сервиса (либо тест в postmanе).
