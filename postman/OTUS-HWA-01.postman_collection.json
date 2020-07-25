@@ -1,0 +1,47 @@
+{
+	"info": {
+		"_postman_id": "54843c07-75cb-46f8-ad99-ba1f0ad91e01",
+		"name": "OTUS-HWA-01",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HWA-01",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e5892c5d-6701-4167-aa67-560f69f17454",
+						"exec": [
+							"pm.test(\"Service has responded with OK\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"OK\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/health",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"health"
+					]
+				},
+				"description": "Основы работы с Kubernetes"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
