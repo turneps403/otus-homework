@@ -1,20 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-deployment
+  name: deployment-web-server
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hello-py-app
+      app: label-pod-web-server
   template:
     metadata:
       labels:
-        app: hello-py-app
+        app: label-pod-web-server
     spec:
       containers:
-        - name: hello-py
-          image: turneps403/otus-spring-demo:v2
+        - name: container-web-server
+          image: turneps403/otus-spring-demo:v4
           ports:
-            - name: web
-              containerPort: 8080
+            - name: port-web-server
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: port-web-server
+              path: /ping
+            initialDelaySeconds: 14
+            periodSeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: port-web-server
+              path: /isready
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 2
