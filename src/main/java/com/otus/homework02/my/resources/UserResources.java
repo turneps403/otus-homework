@@ -1,5 +1,8 @@
 package com.otus.homework02.my.resources;
 
+import com.otus.homework02.my.domain.User;
+import com.otus.homework02.my.exceptions.MyBadRequestException;
+import com.otus.homework02.my.exceptions.MyResourceNotFoundException;
 import com.otus.homework02.my.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -23,31 +24,31 @@ public class UserResources {
     @Autowired
     UserService userService;
 
+    @PostMapping()
     @Operation(summary = "Create a user", description = "Creates a new users record", tags = { "User" })
-    @PostMapping(
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-    )
-    public com.otus.homework02.my.domain.User person(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "user created",content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400", description = "bad request", content = @Content(schema = @Schema(implementation = MyBadRequestException.class)))
+    })
+    public ResponseEntity<User> create_user(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Pet object that needs to be added to the store",
+                    description = "Set user_id with 0 value just for default",
                     required = true
-            ) @RequestBody com.otus.homework02.my.domain.User user
+            ) @RequestBody User req_user
     ) {
-        return user;
+        User user = userService.createUser(req_user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{userId}")
     @Operation(summary = "Show user info", description = "Reads a particular user object and exposes it", tags = { "User" })
     @ApiResponses(value = {
-        //@ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = Person.class))),
-        @ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = Map.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Pet not found", content = @Content)
+        @ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "Invalid ID supplied", content = @Content(schema = @Schema(implementation = MyResourceNotFoundException.class)))
     })
-    @GetMapping("/{userId}")
-    public ResponseEntity<Map> get_user(HttpServletRequest request, @PathVariable(value="userId") String user_id) {
-        Map foo = Collections.singletonMap("status", String.format("delete user %s", user_id));
-        return new ResponseEntity<>(foo, HttpStatus.OK);
+    public ResponseEntity<User> get_user(HttpServletRequest request, @PathVariable(value="userId") Integer user_id) {
+        User user = userService.lookupById(user_id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
 

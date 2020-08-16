@@ -17,21 +17,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User lookupById(Integer userId) throws MyResourceNotFoundException {
-        return null;
+        return userRepository.read(userId);
     }
 
     @Override
-    public User createUser(Integer userId, String title, String description) throws MyBadRequestException {
-        return null;
+    public User createUser(String fristName, String lastName, String email, String phone)
+            throws MyBadRequestException, MyResourceNotFoundException
+    {
+        Integer user_id = userRepository.create(fristName, lastName, email, phone);
+        return this.lookupById(user_id);
+    }
+
+    public User createUser(User user) throws MyBadRequestException, MyResourceNotFoundException
+    {
+        return this.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
     }
 
     @Override
-    public void updateUser(Integer userId, Integer categoryId, User user) throws MyBadRequestException {
-
+    public void updateUser(Integer userId, User user) throws MyBadRequestException {
+        userRepository.update(userId, user);
     }
 
     @Override
-    public void removeUser(Integer userId, Integer categoryId) throws MyResourceNotFoundException {
-
+    public void removeUser(Integer userId) throws MyResourceNotFoundException {
+        userRepository.delete(userId);
     }
+
 }
