@@ -1,48 +1,53 @@
-package com.otus.homework02.my.controller;
+package com.otus.homework02.my.resources;
 
-import com.otus.homework02.my.model.Person;
+import com.otus.homework02.my.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
-@RequestMapping("users")
-public class User {
+@RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UserResources {
 
-    @Operation(summary = "Create a new Person object", description = "Create a new person record in DB", tags = { "User" })
-    //@RequestMapping(path = "/person", method = RequestMethod.POST)
+    @Autowired
+    UserService userService;
+
+    @Operation(summary = "Create a user", description = "Creates a new users record", tags = { "User" })
     @PostMapping(
-            //path = "/person",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
-    public Person person(
-            //@Valid @RequestBody Person person
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pet object that needs to be added to the store", required = true) @Valid @RequestBody Person person
+    public com.otus.homework02.my.domain.User person(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pet object that needs to be added to the store",
+                    required = true
+            ) @RequestBody com.otus.homework02.my.domain.User user
     ) {
-        return person;
+        return user;
     }
 
-    @Operation(summary = "Add a new object", description = "Operation desc", tags = { "User" })
+    @Operation(summary = "Show user info", description = "Reads a particular user object and exposes it", tags = { "User" })
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = Person.class))),
+        //@ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = Person.class))),
+        @ApiResponse(responseCode = "200", description = "user response",content = @Content(schema = @Schema(implementation = Map.class))),
         @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
         @ApiResponse(responseCode = "404", description = "Pet not found", content = @Content)
     })
-    @RequestMapping(method = RequestMethod.GET, path = "/{userId}", consumes = { "application/json", "application/xml" })
-    //public ResponseEntity<Person> get_user(@PathVariable(value="userId") String user_id) {
-    public Person get_user(@PathVariable(value="userId") String user_id) {
-        //return Collections.singletonMap("status", String.format("info by user %s", user_id));
-        //return ResponseEntity.ok().headers(responseHeaders).body(new Person());
-        return new Person();
+    @GetMapping("/{userId}")
+    public ResponseEntity<Map> get_user(HttpServletRequest request, @PathVariable(value="userId") String user_id) {
+        Map foo = Collections.singletonMap("status", String.format("delete user %s", user_id));
+        return new ResponseEntity<>(foo, HttpStatus.OK);
     }
 }
 
@@ -58,11 +63,6 @@ public class User {
 //@RequestMapping("/user")
 //@Api(value = "HelloWorld Resource", description = "shows hello world")
 //public class User {
-//    @GetMapping("/{userId}")
-//    public Map get_user(@PathVariable(value="userId") String user_id) {
-//        return Collections.singletonMap("status", String.format("info by user %s", user_id));
-//    }
-//
 ////    @PostMapping()
 ////    public Map create_user(@RequestBody final String user) {
 ////        return Collections.singletonMap("status", String.format("delete user %s", user));
