@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String FILEDS = "user_id, first_name, last_name, email, phone";
 
     private static final String SQL_FIND_BY_ID =
-            "SELECT "+ FILEDS +" FROM my_users WHERE ID = ?";
+            "SELECT "+ FILEDS +" FROM my_users WHERE user_id = ?";
     private static final String SQL_CREATE =
             "INSERT INTO my_users ("+ FILEDS +") VALUES(NEXTVAL('my_users_seq'), ?, ?, ?, ?)";
     private static final String SQL_UPDATE =
@@ -45,16 +45,17 @@ public class UserRepositoryImpl implements UserRepository {
             }, keyHolder);
             return (Integer) keyHolder.getKeys().get("user_id");
         }catch (Exception e) {
-            throw new MyBadRequestException("Invalid request");
+            throw new MyBadRequestException("Invalid request", e);
         }
     }
 
     @Override
     public User read(Integer userId) throws MyResourceNotFoundException {
         try {
+            System.out.println("Query for lookup " + SQL_FIND_BY_ID + " with " + userId);
             return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId}, userRowMapper);
         }catch (Exception e) {
-            throw new MyResourceNotFoundException("User not found");
+            throw new MyResourceNotFoundException("User not found", e);
         }
     }
 
@@ -62,10 +63,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(Integer userId, User user) throws MyBadRequestException {
         try {
             jdbcTemplate.update(SQL_UPDATE, new Object[]{
-                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone()
+                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), userId
             });
         }catch (Exception e) {
-            throw new MyBadRequestException("Invalid request");
+            throw new MyBadRequestException("Invalid request", e);
         }
     }
 
@@ -75,6 +76,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private RowMapper<User> userRowMapper = ((rs, rowNum) -> {
+        System.out.println("In row mapper");
         return new User(
                 rs.getInt("user_id"),
                 rs.getString("first_name"),
