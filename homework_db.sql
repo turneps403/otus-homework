@@ -1,7 +1,7 @@
 drop database homeworkdb;
 drop user homeuser;
 create user homeuser with password 'password';
-create database homeworkdb with template=template0 owner=homeuser;
+create database homeworkdb with owner=homeuser CONNECTION LIMIT = 3;
 \connect homeworkdb;
 alter default privileges grant all on tables to homeuser;
 alter default privileges grant all on sequences to homeuser;

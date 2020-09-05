@@ -26,7 +26,7 @@ public class Homework02Application {
     }
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${application-description}") String appDesciption, @Value("${application-version}") String appVersion) {
+    public OpenAPI customOpenAPI(@Value("") String appDesciption, @Value("") String appVersion) {
         return new OpenAPI()
                 .info(new Info()
                     .title("Homework02 API")
