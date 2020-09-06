@@ -15,23 +15,54 @@ spec:
         app: myapp
     spec:
       containers:
-      - image: ????
+      - image: turneps403/homework02:1.0.0
         name: myapp
         ports:
-          - containerPort: 8000
+            - name: port-web-server
+              containerPort: 8000
+              protocol: TCP
+        livenessProbe:
+          httpGet:
+            port: port-web-server
+            path: /myactuator/health
+          initialDelaySeconds: 14
+          periodSeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            port: port-web-server
+            path: /myactuator/isready
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 2
         env:
-          - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          - name: APP_POSTGRESQL_USERNAME
             valueFrom:
               secretKeyRef:
-                name: mongodb-secret
-                key: mongo-root-username
-          - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+                name: postgresql-secret
+                key: dbi-user
+          - name: APP_POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: mongodb-secret
-                key: mongo-root-password
-          - name: ME_CONFIG_MONGODB_SERVER
+                name: postgresql-secret
+                key: dbi-password
+          - name: APP_POSTGRESQL_HOST
             valueFrom:
               configMapKeyRef:
-                name: mongodb-configmap
-                key: database_url
+                name: myapp-configmap
+                key: postgresql_host
+          - name: APP_POSTGRESQL_PORT
+            value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-web-server
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: port-web-server
+  type: NodePort

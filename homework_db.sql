@@ -1,5 +1,5 @@
-drop database homeworkdb;
-drop user homeuser;
+-- drop database homeworkdb;
+-- drop user homeuser;
 create user homeuser with password 'password';
 create database homeworkdb with owner=homeuser CONNECTION LIMIT = 3;
 \connect homeworkdb;
