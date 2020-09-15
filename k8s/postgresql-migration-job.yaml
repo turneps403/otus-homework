@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-migration
+spec:
+  template:
+    metadata:
+      name: postgres-migration
+      labels:
+        app: postgres-migration-job
+    spec:
+      containers:
+        - image: postgres:latest
+          name: postgres-migration
+          command: [ "bin/sh", "-c", "PGPASSWORD=$POSTGRES_PASSWORD psql -h $APP_POSTGRESQL_HOST -U $POSTGRES_USER -a -f /sql-migration/homework_db.sql" ]
+          volumeMounts:
+            - name: sql-migration
+              mountPath: /sql-migration
+          env:
+            - name: APP_POSTGRESQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: myapp-configmap
+                  key: postgresql_host
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: dbi-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: dbi-password
+      volumes:
+        - name: sql-migration
+          configMap:
+            name: postgresql-migration
+      restartPolicy: OnFailure

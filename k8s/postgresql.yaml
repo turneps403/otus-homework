@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres-deployment
-  labels:
-    app: postgres
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -15,7 +14,7 @@ spec:
         app: postgres
     spec:
       containers:
-      - image: turneps403/home02postgre:1.0.0
+      - image: postgres:latest
         name: postgres
         ports:
           - containerPort: 5432
@@ -38,7 +37,6 @@ spec:
         - name: postgredb-volume
           persistentVolumeClaim:
             claimName: postgres-pv-claim
-
 ---
 apiVersion: v1
 kind: Service
