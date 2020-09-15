@@ -12,16 +12,13 @@ spec:
       containers:
         - image: postgres:latest
           name: postgres-migration
-          command: [ "bin/sh", "-c", "PGPASSWORD=$POSTGRES_PASSWORD psql -h $APP_POSTGRESQL_HOST -U $POSTGRES_USER -a -f /sql-migration/homework_db.sql" ]
+          command: [ "bin/sh", "-c", "PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRESQL_HOST -U $POSTGRES_USER -a -f /sql-migration/homework_db.sql" ]
           volumeMounts:
             - name: sql-migration
               mountPath: /sql-migration
           env:
-            - name: APP_POSTGRESQL_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: myapp-configmap
-                  key: postgresql_host
+            - name: POSTGRESQL_HOST
+              value: postgresql-service
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:

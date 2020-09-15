@@ -1,0 +1,347 @@
+{
+	"info": {
+		"_postman_id": "78d61521-d675-4514-9b5d-452ea3eebb05",
+		"name": "OTUS-HWA-02",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Service has responded with OK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5266ee0-429a-4652-9a95-cccbd8ade696",
+						"exec": [
+							"pm.test(\"Check healthy\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"OK\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/myactuator/health",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"myactuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Service is ready",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e5892c5d-6701-4167-aa67-560f69f17454",
+						"exec": [
+							"pm.test(\"Check ready\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.res).to.eql(\"yes\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": 0,\n    \"firstName\": \"Vasiliy\",\n    \"lastName\": \"Pupkin\",\n    \"email\": \"pupkin@gmail.com\",\n    \"phone\": \"+88002000600\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/myactuator/isready",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"myactuator",
+						"isready"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e5892c5d-6701-4167-aa67-560f69f17454",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userId).not.eql(0);",
+							"    pm.globals.set(\"$userId\", jsonData.userId);",
+							"});",
+							"pm.test(\"Check firstName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vasiliy\");",
+							"});",
+							"pm.test(\"Check lastName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.lastName).to.eql(\"Pupkin\");",
+							"});",
+							"pm.test(\"Check email\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).to.eql(\"pupkin@gmail.com\");",
+							"});",
+							"pm.test(\"Check phone\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.phone).to.eql(\"+88002000600\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": 0,\n    \"firstName\": \"Vasiliy\",\n    \"lastName\": \"Pupkin\",\n    \"email\": \"pupkin@gmail.com\",\n    \"phone\": \"+88002000600\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/users",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show user info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2f6c21b0-2db7-42d0-8bb8-193f68ba76a6",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userId).to.eql(pm.globals.get(\"$userId\"));",
+							"});",
+							"pm.test(\"Check firstName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vasiliy\");",
+							"});",
+							"pm.test(\"Check lastName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.lastName).to.eql(\"Pupkin\");",
+							"});",
+							"pm.test(\"Check email\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).to.eql(\"pupkin@gmail.com\");",
+							"});",
+							"pm.test(\"Check phone\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.phone).to.eql(\"+88002000600\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/users/{{$userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"users",
+						"{{$userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bab2b22c-87fc-4b62-8503-3314b0c0083b",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userId).to.eql(pm.globals.get(\"$userId\"));",
+							"});",
+							"pm.test(\"Check firstName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vasiliy\");",
+							"});",
+							"pm.test(\"Check lastName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.lastName).to.eql(\"Terkin\");",
+							"});",
+							"pm.test(\"Check email\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).to.eql(\"terkin@gmail.com\");",
+							"});",
+							"pm.test(\"Check phone\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.phone).to.eql(\"+88002000600\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": {{$userId}},\n    \"firstName\": \"Vasiliy\",\n    \"lastName\": \"Terkin\",\n    \"email\": \"terkin@gmail.com\",\n    \"phone\": \"+88002000600\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/users/{{$userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"users",
+						"{{$userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "71dc5591-4f95-40cd-bc23-5c0fd5437ba4",
+						"exec": [
+							"pm.test(\"Check status and code\", function () {",
+							"    pm.expect(pm.response.code).to.eql(204);",
+							"    pm.expect(pm.response.status).to.eql('No Content');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/users/{{$userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"users",
+						"{{$userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check empty GET on deleted user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51cfa582-7639-402a-a218-dabdcb98f610",
+						"exec": [
+							"pm.test(\"Check status and code\", function () {",
+							"    pm.expect(pm.response.code).to.eql(404);",
+							"    pm.expect(pm.response.status).to.eql('Not Found');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/otusapp/sivirinov/users/{{$userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"otusapp",
+						"sivirinov",
+						"users",
+						"{{$userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

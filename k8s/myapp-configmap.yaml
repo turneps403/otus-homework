@@ -4,4 +4,3 @@ metadata:
   name: myapp-configmap
 data:
   postgresql_host: postgresql-service
-
