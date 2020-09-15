@@ -30,6 +30,15 @@ spec:
               secretKeyRef:
                 name: postgresql-secret
                 key: dbi-password
+        volumeMounts:
+          - name: postgredb-volume
+            mountPath: /var/lib/postgresql/data
+            subPath: postgres
+      volumes:
+        - name: postgredb-volume
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+
 ---
 apiVersion: v1
 kind: Service
