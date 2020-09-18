@@ -1,0 +1,14 @@
+apiVersion: v2
+version: 0.1.0
+name: hw02chart
+description: |-
+  My first Helm chart for simple application was written
+  on top of Spring framework and Postgres as RDBMS
+appVersion: 1.0.0
+type: application
+home: https://github.com/turneps403/otus-homework/tree/HWA-02/hw02chart
+dependencies:
+  - name: postgresql
+    version: 9.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
