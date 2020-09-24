@@ -1,0 +1,46 @@
+init:
+  database: app_database
+  dbuser: app_user
+  dbpassword: app_password
+  # in cause of minikube, see this over ssh
+  hostDir: "/tmp/sample"
+  capacity:
+    storage: 100Mi
+  sql: |-
+      DO
+      $do$
+      BEGIN
+        IF NOT EXISTS (
+            SELECT FROM pg_catalog.pg_roles WHERE rolname = '{{ .Values.init.dbuser }}'
+        ) THEN
+          CREATE ROLE {{ .Values.init.dbuser }} LOGIN PASSWORD '{{ .Values.init.dbpassword }}';
+        END IF;
+      END
+      $do$;
+      drop database if exists {{ .Values.init.database }};
+      create database {{ .Values.init.database }} with owner={{ .Values.init.dbuser }} CONNECTION LIMIT = 3;
+      \connect {{ .Values.init.database }};
+      alter default privileges grant all on tables to {{ .Values.init.dbuser }};
+      alter default privileges grant all on sequences to {{ .Values.init.dbuser }};
+
+      create table my_users(
+          user_id integer primary key not null,
+          first_name varchar(256) not null,
+          last_name varchar(256) not null,
+          email varchar(200) not null,
+          phone varchar(14) not null
+      );
+      create sequence my_users_seq increment 1 start 1;
+
+postgresql:
+  postgresqlPostgresPassword: superpassword
+  postgresqlUsername: jhondoe
+  fullnameOverride: mypostgresql
+  persistence:
+    enabled: true
+    existingClaim: pvcname
+  initdbScriptsConfigMap: cmmigration
+  volumePermissions:
+    enabled: true
+  replication:
+    enabled: false

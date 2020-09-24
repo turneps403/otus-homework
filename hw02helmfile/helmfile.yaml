@@ -1,0 +1,14 @@
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+#  - name: stable
+#    url: https://kubernetes-charts.storage.googleapis.com
+
+releases:
+  - # database migration
+    name: postgresql-init
+    namespace: myapp-database
+    createNamespace: true
+    chart: ./charts/postgresql-init
+    values:
+      - ./values/postgresql-init.yaml

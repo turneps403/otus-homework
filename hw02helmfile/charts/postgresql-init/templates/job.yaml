@@ -1,0 +1,33 @@
+{{- if .Values.postgresql.initdbScriptsConfigMap }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.postgresql.initdbScriptsConfigMap }}
+spec:
+  template:
+    metadata:
+      name: {{ .Values.postgresql.initdbScriptsConfigMap }}
+      labels:
+        app: job-{{ .Values.postgresql.initdbScriptsConfigMap }}
+    spec:
+      containers:
+        - image: postgres:latest
+          name: {{ .Values.postgresql.initdbScriptsConfigMap }}
+          command: [ "bin/sh", "-c", "PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRESQL_HOST -U postgres -a -f /sql-migration/create_databases.sql" ]
+          volumeMounts:
+            - name: sql-migration
+              mountPath: /sql-migration
+          env:
+            - name: POSTGRESQL_HOST
+              value: {{ .Values.postgresql.fullnameOverride | trunc 63 | trimSuffix "-" }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: dbi-adm-password
+      volumes:
+        - name: sql-migration
+          configMap:
+            name: {{ .Values.postgresql.initdbScriptsConfigMap }}
+      restartPolicy: OnFailure
+{{- end }}

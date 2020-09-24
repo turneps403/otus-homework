@@ -1,0 +1,32 @@
+{{- if .Values.postgresql.persistence.enabled }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: auto-pv-{{ .Values.postgresql.persistence.existingClaim }}
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.init.capacity.storage }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    # we talk here about path inside minikube (minikube ssh)
+    path: {{ .Values.init.hostDir | default "/tmp/postgresql-pv" }}
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: postgres
+  name: {{ .Values.postgresql.persistence.existingClaim }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.init.capacity.storage }}
+{{- end }}
