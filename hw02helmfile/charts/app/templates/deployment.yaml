@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "app.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.fullname" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: port-web-server
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: port-web-server
+              path: /myactuator/health
+            initialDelaySeconds: 14
+            periodSeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: port-web-server
+              path: /myactuator/isready
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 2
+          env:
+            - name: APP_POSTGRESQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: dbi-user
+            - name: APP_POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secret
+                  key: dbi-password
+            - name: APP_POSTGRESQL_HOST
+              value: {{ .Values.postgresql.serviceName | trunc 63 | trimSuffix "-" }}
+            - name: APP_POSTGRESQL_PORT
+              value: {{ .Values.postgresql.service.port | default 5432 | quote }}

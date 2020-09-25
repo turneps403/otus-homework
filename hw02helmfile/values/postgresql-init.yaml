@@ -8,4 +8,4 @@ init:
     storage: 100M
 
 postgresql:
-  postgresqlPostgresPassword: adminpassword
+  fullnameOverride: mypostgresql

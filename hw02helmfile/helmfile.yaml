@@ -12,3 +12,11 @@ releases:
     chart: ./charts/postgresql-init
     values:
       - ./values/postgresql-init.yaml
+
+  - # app
+    name: app
+    namespace: myapp-application
+    createNamespace: true
+    chart: ./charts/app
+    values:
+      - ./values/app.yaml
