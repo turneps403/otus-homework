@@ -7,7 +7,8 @@
 3. Создайте локальный бранч hw01-gradle
 4. Создать проект gradle
 5. В проект добавьте последнюю версию зависимости
-```<groupId>com.google.guava</groupId>
+```
+<groupId>com.google.guava</groupId>
 <artifactId>guava</artifactId>
 ```
 6. Создайте модуль hw01-gradle
