@@ -37,3 +37,25 @@
 * https://stackoverflow.com/questions/29920434/maven-adding-mainclass-in-pom-xml-with-the-right-folder-path
 * https://github.com/petrelevich/maven-example
 * https://stackoverflow.com/questions/574594/how-can-i-create-an-executable-jar-with-dependencies-using-maven
+
+```
+── README.md
+├── pom.xml
+└── src.main
+    ├── java.ru.otus.app
+        ├── App.java
+        ├── dao
+            ├── CsvQuestionsDao.java
+            └── QuestionsDao.java
+        ├── domain
+            ├── Question.java
+            └── Quiz.java
+        └── service
+            ├── QuizService.java
+            └── QuizServiceImpl.java
+    └── resources
+        ├── quiz.csv
+        └── spring-context.xml
+    └── test.java.ru.otus.app
+        └── AppTest.java
+```
