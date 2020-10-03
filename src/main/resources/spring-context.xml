@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="questionDao" class="ru.otus.app.dao.CsvQuestionsDao">
+        <constructor-arg name="fileName" value="quiz.csv"/>
+    </bean>
+
+    <bean id="myquiz" class="ru.otus.app.domain.Quiz">
+        <constructor-arg name="questions" ref="questionDao"/>
+        <constructor-arg name="success_rate" value="40"/>
+    </bean>
+
+    <bean id="quizService" class="ru.otus.app.service.QuizServiceImpl">
+        <constructor-arg name="q" ref="myquiz"/>
+    </bean>
 
 </beans>
