@@ -25,14 +25,19 @@ mastering Gradle
 ```
 $ git clone --single-branch --branch HWJ-01 https://github.com/turneps403/otus-homework.git hwj01
 $ cd hwj01
-$ cat src/main/java/ru/otus/app/service/HelloOtus.java
-$ ./gradlew build
-$ unzip -l build/libs/hw01.jar
-$ java -jar build/libs/hw01.jar
+$ cat hw01-gradle/src/main/java/ru/otus/app/service/HelloOtus.java
+$ ./gradlew clean build
+$ unzip -l hw01-gradle/build/libs/gradleHelloWorld-0.1.jar
+$ java -jar hw01-gradle/build/libs/gradleHelloWorld-0.1.jar
 ```
 
 #### Useful sources
 * https://guides.gradle.org/building-java-applications/
+* https://habr.com/ru/post/454198/
+* https://github.com/petrelevich/otus_java_2020_09/blob/master/L01-gradle/build.gradle
+* https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Jar.html
 
 #### Troublesooting
-https://stackoverflow.com/questions/4871656/using-gradle-to-build-a-jar-with-dependencies
+* https://stackoverflow.com/questions/4871656/using-gradle-to-build-a-jar-with-dependencies
+* https://stackoverflow.com/questions/18965528/using-archivesbasename-in-a-gradle-project-has-no-effect
+* https://stackoverflow.com/questions/31405818/want-to-specify-jar-name-and-version-both-in-build-gradle/31407245
