@@ -2,7 +2,6 @@
 !src/main/resources/application.properties
 mvnw*
 .mvn
-src/test
 !src/main/resources
 tmp
 
@@ -39,3 +38,20 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Package Files #
+*.jar
+!gradle-wrapper.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+out
