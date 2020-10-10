@@ -1,13 +1,27 @@
 #### задание
-Сделать простейший **RESTful CRUD** по созданию, удалению, просмотру и обновлению пользователей.
-Пример API - https://app.swaggerhub.com/apis/otus55/users/1.0.0 yaml [здесь](https://github.com/turneps403/otus-homework/blob/HWA-02/otus55-users-1.0.0-resolved.yaml)
+**Prometheus. Grafana**
+Инструментировать сервис из прошлого задания метриками в формате Prometheus с помощью библиотеки для вашего фреймворка и ЯП.
 
-1. Запилить REST crud сервис согласно OpenAPI https://app.swaggerhub.com/apis/otus55/users/1.0.0 yaml [здесь](https://github.com/turneps403/otus-homework/blob/HWA-02/otus55-users-1.0.0-resolved.yaml)
-1. Организовать первоначальную миграцию (создать юзера, базу и таблицу)
-1. Поднимать все под k8s, helm обязательно
-    2. Жедательно использовать официальный Chart для БД
-    2. Ingress-ы должны также вести на url ```arch.homework/otusapp/{student-name}/*```
-1. Реализовать тестирование через Postman
+Сделать дашборд в Графане, в котором были бы метрики с разбивкой по API методам:
+1. Latency (response time) с квантилями по 0.5, 0.95, 0.99, max
+2. RPS
+3. Error Rate - количество 500ых ответов
+
+Добавить в дашборд графики с метрикам в целом по сервису, взятые с nginx-ingress-controller:
+1. Latency (response time) с квантилями по 0.5, 0.95, 0.99, max
+2. RPS
+3. Error Rate - количество 500ых ответов
+
+Настроить алертинг в графане на Error Rate и Latency.
+
+На выходе должно быть:
+0. скриншоты дашборды с графиками в момент стресс-тестирования сервиса. Например, после 5-10 минут нагрузки.
+1. json-дашборды.
+
+Задание со звездочкой (+5 баллов)
+Используя существующие системные метрики из кубернетеса, добавить на дашборд графики с метриками:
+1. Потребление подами приложения памяти
+2. Потребление подами приолжения CPU
 
 #### структура файлов
 ```
@@ -71,5 +85,15 @@ get pods -n myapp-application
 helmfile destroy
 ```
 
-#### немного ссылок
-- описание того, как именно нужно добиться [работоспособности запроса](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/)
+#### Useful snippets
+```
+$ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
+```
+
+#### Knoweledge
+* https://www.youtube.com/watch?v=nJMRmhbY5hY
+* https://www.youtube.com/watch?v=mLPg49b33sA
+* https://ru.coursera.org/lecture/znakomstvo-r-bazovaya-statistika/miediana-i-kvantili-Tj9Lf
+
+#### Troublesooting
+* https://github.com/helm/charts/issues/21690

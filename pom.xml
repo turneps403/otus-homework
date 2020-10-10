@@ -6,12 +6,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
-    <groupId>com.otus.homework02</groupId>
-    <artifactId>HWA-02</artifactId>
+    <groupId>com.otus.homework</groupId>
+    <artifactId>HWA</artifactId>
     <version>0.0.1</version>
-    <name>homework02</name>
+    <name>homework</name>
     <description>Rest web server</description>
 
     <properties>

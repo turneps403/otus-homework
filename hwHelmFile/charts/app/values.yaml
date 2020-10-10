@@ -1,0 +1,23 @@
+replicaCount: 1
+image:
+  repository: turneps403/homework03
+  tag: "1.1.0"
+service:
+  type: NodePort
+  port: 80
+psql:
+  password: password
+  user: homeuser
+  database: app_database
+postgresql:
+  serviceName: mypostgresql
+  service:
+    port: 5432
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  hosts:
+    - host: arch.homework
+      paths:
+        - /otusapp/sivirinov(/|$)(.*)
