@@ -3,7 +3,7 @@
 mvnw*
 .mvn
 src/test
-src/main/resources
+!src/main/resources
 tmp
 
 HELP.md
