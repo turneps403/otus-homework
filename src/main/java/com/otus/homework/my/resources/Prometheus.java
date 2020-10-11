@@ -1,5 +1,6 @@
 package com.otus.homework.my.resources;
 
+import io.micrometer.core.annotation.Timed;
 import io.prometheus.client.*;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
@@ -94,5 +95,13 @@ public class Prometheus {
                 "res",
                 String.format("I kept you waiting for %s ms!", sleepDuration)
         );
+    }
+
+
+    @Timed
+    @GetMapping(value = "/hello")
+    @Operation(hidden = true)
+    public Map hello() {
+        return Collections.singletonMap("res", "hello");
     }
 }

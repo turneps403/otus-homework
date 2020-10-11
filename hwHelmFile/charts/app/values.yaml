@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: turneps403/homework03
-  tag: "1.1.0"
+  tag: "1.2.0"
 service:
   type: NodePort
   port: 80

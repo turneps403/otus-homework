@@ -96,6 +96,7 @@ $ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
 * https://www.youtube.com/watch?v=mLPg49b33sA
 * https://ru.coursera.org/lecture/znakomstvo-r-bazovaya-statistika/miediana-i-kvantili-Tj9Lf
 * https://github.com/mweirauch/micrometer-jvm-extras
+* https://blog.gojekengineering.com/diy-how-to-set-up-prometheus-and-ingress-on-kubernetes-d395248e2ba
 
 #### Troublesooting
 * https://github.com/helm/charts/issues/21690
