@@ -91,9 +91,11 @@ $ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
 ```
 
 #### Knoweledge
+* https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html
 * https://www.youtube.com/watch?v=nJMRmhbY5hY
 * https://www.youtube.com/watch?v=mLPg49b33sA
 * https://ru.coursera.org/lecture/znakomstvo-r-bazovaya-statistika/miediana-i-kvantili-Tj9Lf
+* https://github.com/mweirauch/micrometer-jvm-extras
 
 #### Troublesooting
 * https://github.com/helm/charts/issues/21690
