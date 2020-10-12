@@ -65,6 +65,11 @@ $ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/count ; 
 $ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/hist ; sleep 3; done
 ```
 
+#### Enhance
+неплохо бы оформить кастомные объекы для сбора статистики в виде ```@Component``` чтобы
+соотвествовать **IoC** идеологии Spring
+* https://koudingspawn.de/spring-boot-cloud-ready-part-ii/
+
 #### Knoweledge
 * https://stackabuse.com/monitoring-spring-boot-apps-with-micrometer-prometheus-and-grafana/
 * https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html
