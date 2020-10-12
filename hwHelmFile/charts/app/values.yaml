@@ -3,8 +3,8 @@ image:
   repository: turneps403/homework03
   tag: "1.2.0"
 service:
-  type: NodePort
-  port: 80
+  type: ClusterIP
+  port: 3000
 psql:
   password: password
   user: homeuser

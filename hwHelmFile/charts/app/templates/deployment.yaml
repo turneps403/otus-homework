@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ .Chart.Name }}-deployment
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    purpose: {{ .Chart.Name }}-deployment
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "app.fullname" . }}
+      purpose: {{ .Chart.Name }}-pod
   template:
     metadata:
       labels:
-        app: {{ include "app.fullname" . }}
+        purpose: {{ .Chart.Name }}-pod
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
-            - name: port-web-server
+            - name: {{ .Chart.Name }}-pdport
               containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
-              port: port-web-server
+              port: {{ .Chart.Name }}-pdport
               path: /myactuator/health
             initialDelaySeconds: 14
             periodSeconds: 5
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
-              port: port-web-server
+              port: {{ .Chart.Name }}-pdport
               path: /myactuator/isready
             initialDelaySeconds: 10
             periodSeconds: 10

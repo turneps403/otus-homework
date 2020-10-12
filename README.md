@@ -90,7 +90,15 @@ helmfile destroy
 $ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
 ```
 
+http://graphana.arch.homework/ (admin + prom_operator)
+http://prometheus.arch.homework/graph
+http://arch.homework/otusapp/sivirinov/actuator/prometheus
+http://arch.homework/otusapp/sivirinov/prom/hello
+http://arch.homework/otusapp/sivirinov/prom/count
+http://arch.homework/otusapp/sivirinov/prom/gauge/inc
+
 #### Knoweledge
+* https://stackabuse.com/monitoring-spring-boot-apps-with-micrometer-prometheus-and-grafana/
 * https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html
 * https://www.youtube.com/watch?v=nJMRmhbY5hY
 * https://www.youtube.com/watch?v=mLPg49b33sA
@@ -98,5 +106,11 @@ $ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
 * https://github.com/mweirauch/micrometer-jvm-extras
 * https://blog.gojekengineering.com/diy-how-to-set-up-prometheus-and-ingress-on-kubernetes-d395248e2ba
 
+#### MostTimeConsumingTrouble
+* service monitor was discovered but had 0/1 active targets
+
 #### Troublesooting
 * https://github.com/helm/charts/issues/21690
+* https://github.com/prometheus-operator/prometheus-operator/issues/1470#issuecomment-652142735
+* https://stackoverflow.com/questions/52991038/how-to-create-a-servicemonitor-for-prometheus-operator
+* https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/troubleshooting.md#troubleshooting-servicemonitor-changes

@@ -1,15 +1,12 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "app.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ .Chart.Name }}-ingress
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    purpose: {{ .Chart.Name }}-ingress
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
+  {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   rules:
@@ -20,8 +17,7 @@ spec:
           {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: service-{{ $fullName }}
-              servicePort: {{ $svcPort }}
+              serviceName: {{ $.Chart.Name }}-service
+              servicePort: {{ $.Chart.Name }}-svport
           {{- end }}
     {{- end }}
-  {{- end }}
