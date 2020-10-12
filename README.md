@@ -25,79 +25,45 @@
 
 #### структура файлов
 ```
-├── Dockerfile - мой докер-файл для app
-├── PostgreSQLDockerfile - это ручная сборка image БД с миграцией
-├── OTUS-HWA-02.postman_collection.json
-├── homework_db.sql - это миграционный sql
-├── k8s - папка с манифестами для запуска через kubectl
-├── hw02chart - папка для запуска через helm
-├── hw02helmfile - папка для запуска через helmfile
+├── OTUS-HWA.postman_collection.json - тесты для postman
+├── hwHelmFile - запуск helmfile sync
+├── myFiles - доп файлы, скриншоты
 ```
 #### что делал
-###### приложенька
-Вначале сделал приложение на Spring framework и Postgresql. 
-Для реализации OpenAPI использовал либу springdoc-openapi-ui.
-*Подводные камни*: генератор openapi из yaml в java переливает с использованием 
-устаревшей библиотеки, которая саппортит только OpenAPI 2.x, пришлось отказаться
-*Проверки*: ```./mvnw package && java -jar target/gs-spring-boot-docker-0.1.0.jar```
-###### чистый Docker
-Написан ```Dockerfile``` для сборки image, после вызова ```./mvnw package```
-Image залит на DockerHub [здесь](https://hub.docker.com/r/turneps403/homework02)
+домашнее задание сделано на основе [предыдущего](https://github.com/turneps403/otus-homework/tree/HWA-02)
 
-Для запуска миграционных скриптов, согласно документации [Postgres:Initialization scripts](https://hub.docker.com/_/postgres)
-запилил еще один ```PostgreSQLDockerfile``` где создается образ с нужными миграциями
-Image залит на DockerHub [здесь](https://hub.docker.com/r/turneps403/home02postgre)
-*Проверки*: запуск двух котнейнеров показал рабочий результат
-###### чистый k8s
-в папке ```k8s``` лежат пронумерованные списки манифестов в порядке их запуска
-*Проверки*: ```kubectl apply -f k8s/1-...```
-*Подводные камни*: это единственный вариант, где было уместо использовать Job для миграции в Postgres
-###### helm
-Папка ```hw02chart```, запуск из папки ```helm install foo-bar .``` и удаление ```helm delete foo-bar```
-Сделано, как и просили с зависимостью на официальный Chart ```bitnami/postgresql``` 
-*Подводные камни*: я сделал миграцию с Job, но это явно лишнее. 
-Вариант работает, но хотелось чего-то еще. При большом количестве Chart управление неуджобное.
-##### helmfile
-Папка ```hw02helmfile``` - это последний вариант, на котором я остановился.
-Запуск и удаление pod ```helmfile sync``` и ```helmfile destroy```
-Здесь я использовал разные ```namespace``` для базы и приложения
-*Подводные камни*: 
-* я отказался от Job в пользу первоначальной миграции через инициирующий ConfigMap
-* minikube на MacOS не умеет линкать pvc на локальную файлуху, 
-поэтому ```hostDir``` нужно искать через ```minikube ssh```
-* ingress сделан с учетом включенного аддона ```minikube addons enable ingress```
-* были проблемы с ingress и я включал minikube через ```minikube start --vm=true```
-###### postman
-На всех этапах для проверки использовался postman ```OTUS-HWA-02.postman_collection.json```
+я не следовал в прямую материалам урока, поскольку мы отключали addon ingress, а мне хотелось заэкспозить и мой сервис и графану и прометеус.
+что было сделано:
+- приложение перевел с maven на gradle
+- добавил actuator
+- запилил кастомные вызовы для сбора статистики для prometeus ```com.otus.homework.my.resources.Prometheus``` поддержал все типы: counter, gauge, histogram, summary Ручные вызовы будут полезны для сбора бизнес метрик приложения
+- поддержал там же сбор статистики через аннотации (попробовал только с ```@Timed```)
+- расширил описание helmfile релизами prometheus и prometheus-operator (kube-prometheus-stack)
+- добавил релиз с ингрессом для графаны и прометеуса + положил сюда service monitor
+- весь стек прометеуса, ингрессы, и сервис-монитор я положил в отдельный неймспейс, избегая смешивать с неймспейсами приложения
+- для мониторинга памяти приложения (задание со звездой), я использовал готовый дашборд [JVM (Micrometer)](https://grafana.com/grafana/dashboards/4701)
+- для кастомного графика типа counter я сделал accumulate график и добавил alert средствами графаны
+- для кастомного графика типа histogram настроил два персентиля 50 и 95
+- json кастомного дашборда а папке ```myFiles```
 
-#### как проверять
+#### after helmfile
+будут доступны urls, если прописать три домена на ```minikube ip```
 ```
-git clone --single-branch --branch HWA-02 https://github.com/turneps403/otus-homework.git
-cd otus-homework/hw02helmfile
-helmfile sync
-...
-проверям статусы
-get pods -n myapp-database
-get pods -n myapp-application
-...
-запускаем тесты Postman
-...
-helmfile destroy
-```
-Dashboard
-JVM (Micrometer) https://grafana.com/grafana/dashboards/4701
-
-#### Useful snippets
-```
-$ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/count ; sleep 3; done
-```
-
 http://graphana.arch.homework/ (admin + prom_operator)
 http://prometheus.arch.homework/graph
+
 http://arch.homework/otusapp/sivirinov/actuator/prometheus
 http://arch.homework/otusapp/sivirinov/prom/hello
 http://arch.homework/otusapp/sivirinov/prom/count
 http://arch.homework/otusapp/sivirinov/prom/gauge/inc
+```
+тесты postman будут работать
+
+#### useful snippets
+```
+$ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/count ; sleep 3; done
+$ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/hist ; sleep 3; done
+```
 
 #### Knoweledge
 * https://stackabuse.com/monitoring-spring-boot-apps-with-micrometer-prometheus-and-grafana/
