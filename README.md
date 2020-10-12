@@ -84,10 +84,12 @@ get pods -n myapp-application
 ...
 helmfile destroy
 ```
+Dashboard
+JVM (Micrometer) https://grafana.com/grafana/dashboards/4701
 
 #### Useful snippets
 ```
-$ while 1; do ab -n 50 -c 5 http://192.168.176.128:32033/db ; sleep 3; done
+$ while 1; do ab -n 10 -c 5 http://arch.homework/otusapp/sivirinov/prom/count ; sleep 3; done
 ```
 
 http://graphana.arch.homework/ (admin + prom_operator)
