@@ -3,6 +3,7 @@ package com.otus.homework.my.repositories;
 import com.otus.homework.my.domain.User;
 import com.otus.homework.my.exceptions.MyBadRequestException;
 import com.otus.homework.my.exceptions.MyResourceNotFoundException;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,14 +18,16 @@ import java.sql.Statement;
 public class UserRepositoryImpl implements UserRepository {
 
     // see homework_db.sql
-    private static final String FILEDS = "user_id, first_name, last_name, email, phone";
+    private static final String FILEDS = "user_id, first_name, last_name, email, phone, password";
 
     private static final String SQL_FIND_BY_ID =
             "SELECT "+ FILEDS +" FROM my_users WHERE user_id = ?";
+    private static final String SQL_FIND_BY_EMAIL =
+            "SELECT "+ FILEDS +" FROM my_users WHERE email = ?";
     private static final String SQL_CREATE =
-            "INSERT INTO my_users ("+ FILEDS +") VALUES(NEXTVAL('my_users_seq'), ?, ?, ?, ?)";
+            "INSERT INTO my_users ("+ FILEDS +") VALUES(NEXTVAL('my_users_seq'), ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE =
-            "UPDATE my_users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE user_id = ?";
+            "UPDATE my_users SET first_name = ?, last_name = ?, email = ?, phone = ?, password = ? WHERE user_id = ?";
     private static final String SQL_DELETE_USER =
             "DELETE FROM my_users WHERE user_id = ?";
 
@@ -32,8 +35,9 @@ public class UserRepositoryImpl implements UserRepository {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Integer create(String firstName, String lastName, String email, String phone) throws MyBadRequestException {
+    public Integer create(String firstName, String lastName, String email, String phone, String password) throws MyBadRequestException {
         try {
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS);
@@ -41,6 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
                 ps.setString(2, lastName);
                 ps.setString(3, email);
                 ps.setString(4, phone);
+                ps.setString(5, hashedPassword);
                 return ps;
             }, keyHolder);
             return (Integer) keyHolder.getKeys().get("user_id");
@@ -60,13 +65,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User read(String email) throws MyResourceNotFoundException {
+        try {
+            System.out.println("Query for lookup " + SQL_FIND_BY_EMAIL + " with email " + email);
+            return jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, new Object[]{email}, userRowMapper);
+        } catch (Exception e) {
+            throw new MyResourceNotFoundException("User not found", e);
+        }
+    }
+
+    @Override
     public void update(Integer userId, User user) throws MyBadRequestException {
         try {
             jdbcTemplate.update(SQL_UPDATE, new Object[]{
-                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), userId
+                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), user.getPassword(), userId
             });
         }catch (Exception e) {
-            throw new MyBadRequestException("Invalid request", e);
+            throw new MyBadRequestException("Invalsid request", e);
         }
     }
 
@@ -82,7 +97,8 @@ public class UserRepositoryImpl implements UserRepository {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("email"),
-                rs.getString("phone")
+                rs.getString("phone"),
+                rs.getString("password")
         );
     });
 }

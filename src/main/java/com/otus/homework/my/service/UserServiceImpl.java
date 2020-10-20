@@ -21,16 +21,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String fristName, String lastName, String email, String phone)
+    public User lookupByEmail(String email) throws MyResourceNotFoundException {
+        return userRepository.read(email);
+    }
+
+    @Override
+    public User createUser(String fristName, String lastName, String email, String phone, String password)
             throws MyBadRequestException, MyResourceNotFoundException
     {
-        Integer user_id = userRepository.create(fristName, lastName, email, phone);
+        Integer user_id = userRepository.create(fristName, lastName, email, phone, password);
         return this.lookupById(user_id);
     }
 
     public User createUser(User user) throws MyBadRequestException, MyResourceNotFoundException
     {
-        return this.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
+        return this.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), user.getPassword());
     }
 
     @Override

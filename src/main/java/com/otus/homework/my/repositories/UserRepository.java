@@ -6,8 +6,9 @@ import com.otus.homework.my.exceptions.MyResourceNotFoundException;
 
 public interface UserRepository {
 
-    Integer create(String fristName, String lastName, String email, String phone) throws MyBadRequestException;
+    Integer create(String fristName, String lastName, String email, String phone, String password) throws MyBadRequestException;
     User read(Integer userId) throws MyResourceNotFoundException;
+    User read(String email) throws MyResourceNotFoundException;
     void update(Integer userId, User user) throws MyBadRequestException;
     void delete(Integer userId);
 

@@ -12,6 +12,7 @@ public class User {
     private String lastName;
     private String email;
     private String phone;
+    private String password;
 
     public User(
         Integer userId,
@@ -22,13 +23,15 @@ public class User {
             // https://stackoverflow.com/questions/36991770/create-phone-number-regex
             regexp = "^(?:[+][0-9]{2}\\s?[0-9]{3}[-]?[0-9]{3,}|(?:[(][0-9]{3}[)]|[0-9]{3})\\s*[-]?\\s*[0-9]{3}[-][0-9]{4})(?:\\s*x\\s*[0-9]+)?",
             message = "Please provide a valid phone number"
-        ) String phone
+        ) String phone,
+        @NotNull @NotBlank @Size(max = 256) String password
     ) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.password = password;
     }
 
     public Integer getUserId() {
@@ -64,6 +67,14 @@ public class User {
     }
 
     public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPassword() {
+        return phone;
+    }
+
+    public void setePassword(String phone) {
         this.phone = phone;
     }
 }

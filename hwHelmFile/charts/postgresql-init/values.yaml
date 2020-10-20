@@ -28,7 +28,9 @@ init:
           first_name varchar(256) not null,
           last_name varchar(256) not null,
           email varchar(200) not null,
-          phone varchar(14) not null
+          phone varchar(14) not null,
+          password varchar(200) not null,
+          UNIQUE(email)
       );
       create sequence my_users_seq increment 1 start 1;
 
