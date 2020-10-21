@@ -51,3 +51,5 @@ spec:
               value: {{ .Values.postgresql.serviceName | trunc 63 | trimSuffix "-" }}
             - name: APP_POSTGRESQL_PORT
               value: {{ .Values.postgresql.service.port | default 5432 | quote }}
+            - name: X_USER_HEADER
+              value: {{ .Values.jwt.reponseHeader | quote }}

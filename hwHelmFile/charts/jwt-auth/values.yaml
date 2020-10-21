@@ -1,0 +1,18 @@
+replicaCount: 1
+image:
+  repository: turneps403/jwt-spring-middleware
+  tag: "1.0.0"
+service:
+  type: ClusterIP
+  port: 3003
+jwt:
+  secretKey: foobarbaz
+  reponseHeader: "X-Jwt-Userid"
+  body:
+    desirableKey:
+      name: "uid"
+      defaultValue: "0"
+  ttl: 60000
+  login:
+    service: app-service.myapp-application
+    port: app-svport

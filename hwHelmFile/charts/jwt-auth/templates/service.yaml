@@ -6,12 +6,12 @@ metadata:
     purpose: {{ .Chart.Name }}-service
     prometheus: enable
 spec:
-  #type: ExternalName
-  #externalName: app.traefikns.svc.cluster.local
+  # externalName: jwt.traefikns.svc.cluster.local
   type: {{ .Values.service.type | default "ClusterIP" }}
   ports:
     - port: {{ .Values.service.port | default "8080" }}
       targetPort: {{ .Chart.Name }}-pdport
-      name: {{ .Chart.Name }}-svport
+      name: jwtport
+      protocol: TCP
   selector:
     purpose: {{ .Chart.Name }}-pod

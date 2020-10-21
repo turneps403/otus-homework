@@ -1,36 +1,52 @@
 repositories:
+  - name: traefik
+    url: https://helm.traefik.io/traefik
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
-  - name: prometheus-community
-    url: https://prometheus-community.github.io/helm-charts
+#  - name: prometheus-community
+#    url: https://prometheus-community.github.io/helm-charts
 #  - name: stable
 #    url: https://kubernetes-charts.storage.googleapis.com
 
 releases:
-  - # prometheus
-    name: prometheus-init
-    chart: prometheus-community/kube-prometheus-stack
-    namespace: metrics
+  - name: mytraefik
+    chart: ./charts/mytraefik
+    namespace: traefikns
     createNamespace: true
     values:
-      - ./values/prometheus-init.yaml
+      - ./values/mytraefik.yaml
 
-  - # expose prometheus
-    name: prometheus-ingress-expose
-    namespace: metrics
+  - name: jwt-auth
+    namespace: myapp-application
     createNamespace: true
-    chart: ./charts/prometheus-ingress-expose
+    chart: ./charts/jwt-auth
     values:
-      - ./values/prometheus-ingress-expose.yaml
+      - ./values/jwt-auth.yaml
 
-  - # database migration
-    name: postgresql-init
-    namespace: myapp-database
-    createNamespace: true
-    chart: ./charts/postgresql-init
-    values:
-      - ./values/postgresql-init.yaml
+#  - # prometheus
+#    name: prometheus-init
+#    chart: prometheus-community/kube-prometheus-stack
+#    namespace: metrics
+#    createNamespace: true
+#    values:
+#      - ./values/prometheus-init.yaml
+#
+#  - # expose prometheus
+#    name: prometheus-ingress-expose
+#    namespace: metrics
+#    createNamespace: true
+#    chart: ./charts/prometheus-ingress-expose
+#    values:
+#      - ./values/prometheus-ingress-expose.yaml
 
+#  - # database migration
+#    name: postgresql-init
+#    namespace: myapp-database
+#    createNamespace: true
+#    chart: ./charts/postgresql-init
+#    values:
+#      - ./values/postgresql-init.yaml
+#
   - # app
     name: app
     namespace: myapp-application
