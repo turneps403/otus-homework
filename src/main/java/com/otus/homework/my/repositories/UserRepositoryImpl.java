@@ -77,8 +77,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void update(Integer userId, User user) throws MyBadRequestException {
         try {
+            // TODO: change/update password here isnt a good idea
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
             jdbcTemplate.update(SQL_UPDATE, new Object[]{
-                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), user.getPassword(), userId
+                    user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), hashedPassword, userId
             });
         }catch (Exception e) {
             throw new MyBadRequestException("Invalsid request", e);

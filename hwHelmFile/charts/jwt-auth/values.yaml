@@ -12,7 +12,7 @@ jwt:
     desirableKey:
       name: "uid"
       defaultValue: "0"
-  ttl: 60000
+  ttl: 600000
   login:
     service: app-service.myapp-application
-    port: app-svport
+    port: 3000

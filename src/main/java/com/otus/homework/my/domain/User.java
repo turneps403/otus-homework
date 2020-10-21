@@ -15,16 +15,16 @@ public class User {
     private String password;
 
     public User(
-        Integer userId,
-        @NotNull @NotBlank @Size(max = 256) String firstName,
-        @NotNull @NotBlank @Size(max = 256) String lastName,
-        @Pattern(regexp = ".+@.+\\..+", message = "Please provide a valid email address") String email,
-        @Pattern(
-            // https://stackoverflow.com/questions/36991770/create-phone-number-regex
-            regexp = "^(?:[+][0-9]{2}\\s?[0-9]{3}[-]?[0-9]{3,}|(?:[(][0-9]{3}[)]|[0-9]{3})\\s*[-]?\\s*[0-9]{3}[-][0-9]{4})(?:\\s*x\\s*[0-9]+)?",
-            message = "Please provide a valid phone number"
-        ) String phone,
-        @NotNull @NotBlank @Size(max = 256) String password
+            Integer userId,
+            @NotNull @NotBlank @Size(max = 256) String firstName,
+            @NotNull @NotBlank @Size(max = 256) String lastName,
+            @Pattern(regexp = ".+@.+\\..+", message = "Please provide a valid email address") String email,
+            @Pattern(
+                    // https://stackoverflow.com/questions/36991770/create-phone-number-regex
+                    regexp = "^(?:[+][0-9]{2}\\s?[0-9]{3}[-]?[0-9]{3,}|(?:[(][0-9]{3}[)]|[0-9]{3})\\s*[-]?\\s*[0-9]{3}[-][0-9]{4})(?:\\s*x\\s*[0-9]+)?",
+                    message = "Please provide a valid phone number"
+            ) String phone,
+            @NotNull @NotBlank @Size(max = 256) String password
     ) {
         this.userId = userId;
         this.firstName = firstName;
@@ -71,10 +71,10 @@ public class User {
     }
 
     public String getPassword() {
-        return phone;
+        return password;
     }
 
-    public void setePassword(String phone) {
-        this.phone = phone;
+    public void setePassword(String password) {
+        this.password = password;
     }
 }

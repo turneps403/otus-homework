@@ -4,7 +4,6 @@ metadata:
   name: forward-auth
 spec:
   forwardAuth:
-    #address: http://jwt-auth-service.myapp-application:jwtport/jwt/auth
     address: http://jwt-auth-service.myapp-application:3003/jwt/auth
     authResponseHeaders:
       - {{ .Values.jwt.reponseHeader | default "X-JWT-UserID" }}

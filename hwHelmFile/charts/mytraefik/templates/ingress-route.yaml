@@ -5,6 +5,7 @@ metadata:
 spec:
   externalName: app-service.myapp-application
   type: ExternalName
+
 ---
 apiVersion: v1
 kind: Service
@@ -13,6 +14,7 @@ metadata:
 spec:
   externalName: jwt-auth-service.myapp-application
   type: ExternalName
+
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -24,34 +26,15 @@ spec:
     - websecure
   routes:
     # "Host(`traefik.example.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-    - #match: PathPrefix(`/jwt/login`)
-      match: PathPrefix(`/jwt`)
+    - match: PathPrefix(`/jwt/login`)
       kind: Rule
       services:
         - name: external-jwt
           port: 3003
-          #port: jwtport
     - match: PathPrefix(`/`)
       kind: Rule
       services:
         - name: external-app
           port: 3000
-          # port: app-svport
       middlewares:
         - name: forward-auth
-
-{{/*apiVersion: extensions/v1beta1*/}}
-{{/*kind: Ingress*/}}
-{{/*metadata:*/}}
-{{/*  annotations:*/}}
-{{/*    kubernetes.io/ingress.class: traefik*/}}
-{{/*  name: ingress-to-other-ns*/}}
-{{/*spec:*/}}
-{{/*  rules:*/}}
-{{/*    - host: app.minikube*/}}
-{{/*      http:*/}}
-{{/*        paths:*/}}
-{{/*          - backend:*/}}
-{{/*              serviceName: app*/}}
-{{/*              servicePort: 3000*/}}
-{{/*            path: /*/}}

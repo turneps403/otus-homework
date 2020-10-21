@@ -39,14 +39,14 @@ releases:
 #    values:
 #      - ./values/prometheus-ingress-expose.yaml
 
-#  - # database migration
-#    name: postgresql-init
-#    namespace: myapp-database
-#    createNamespace: true
-#    chart: ./charts/postgresql-init
-#    values:
-#      - ./values/postgresql-init.yaml
-#
+  - # database migration
+    name: postgresql-init
+    namespace: myapp-database
+    createNamespace: true
+    chart: ./charts/postgresql-init
+    values:
+      - ./values/postgresql-init.yaml
+
   - # app
     name: app
     namespace: myapp-application
