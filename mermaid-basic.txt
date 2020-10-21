@@ -1,0 +1,13 @@
+graph TD
+  U[Client] --> |with JWT| T{Traefik}
+  T --> |One:| Mid(ForwardAuth middleware)
+  Mid --> |send JWT| JWT(JWT Auth/Login application)
+  JWT --> |auth Header| Mid
+  T --> |Two: with auth Header| App(Application)
+  App --> D(Database)
+
+  U2[Client] --> T2{Traefik}
+  T2 --> |send login + password| JWT2(JWT Auth/Login application)
+  JWT2 --> |send login + password| App2(Application)
+  App2 --> D2(Database)
+  JWT2 --> |send JWT| T2

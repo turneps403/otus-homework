@@ -32,6 +32,8 @@
 - в `helmfile` добавлены релизы для *Traefik* 2.x и JWT сервиса
 - написаны тесты для Postman
 
+![](myFiles/simple-graph.png)
+
 #### мой доп github код для домашки
 - [traefik + middleware](https://github.com/turneps403/helmfile-traefik-v2-minikube)
 - [app for jwt](https://github.com/turneps403/java-crumbs/tree/jwt-middleware)
