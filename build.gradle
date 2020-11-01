@@ -16,12 +16,14 @@ repositories {
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
-    implementation ("io.micrometer:micrometer-registry-prometheus")
+    implementation('org.springframework.kafka:spring-kafka')
+    implementation('org.springframework.kafka:spring-kafka-test')
+//    implementation ("io.micrometer:micrometer-registry-prometheus")
 
-    implementation('org.mindrot:jbcrypt:0.4')
-    implementation('org.springdoc:springdoc-openapi-ui:1.4.8')
-    implementation('org.springframework.boot:spring-boot-starter-jdbc')
-    implementation('org.postgresql:postgresql')
+//    implementation('org.mindrot:jbcrypt:0.4')
+//    implementation('org.springdoc:springdoc-openapi-ui:1.4.8')
+//    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+//    implementation('org.postgresql:postgresql')
 
     testImplementation 'junit:junit'
 }

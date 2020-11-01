@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+  labels:
+    purpose: {{ .Chart.Name }}-service
+    prometheus: enable
+spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.service.port | default "8080" }}
+      targetPort: cmd-pod-port
+      name: cmd-app-port
+  selector:
+    purpose: {{ .Chart.Name }}-pod

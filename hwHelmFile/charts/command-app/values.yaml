@@ -1,0 +1,7 @@
+replicaCount: 1
+image:
+  repository: turneps403/homework06
+  tag: "1.0.0"
+service:
+  type: NodePort
+  port: 3000

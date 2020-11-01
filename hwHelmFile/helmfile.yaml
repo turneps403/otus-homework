@@ -9,19 +9,34 @@ repositories:
 #    url: https://kubernetes-charts.storage.googleapis.com
 
 releases:
-  - name: mytraefik
-    chart: ./charts/mytraefik
-    namespace: traefikns
-    createNamespace: true
-    values:
-      - ./values/mytraefik.yaml
+#  - name: myzookeeper
+#    chart: bitnami/zookeeper
+#    namespace: zookaf
+#    createNamespace: true
 
-  - name: jwt-auth
-    namespace: myapp-application
+  - name: mykafka
+    chart: bitnami/kafka
+    namespace: zookaf
     createNamespace: true
-    chart: ./charts/jwt-auth
-    values:
-      - ./values/jwt-auth.yaml
+
+  - name: capp
+    namespace: zookaf
+    createNamespace: true
+    chart: ./charts/command-app
+
+#  - name: mytraefik
+#    chart: ./charts/mytraefik
+#    namespace: traefikns
+#    createNamespace: true
+#    values:
+#      - ./values/mytraefik.yaml
+#
+#  - name: jwt-auth
+#    namespace: myapp-application
+#    createNamespace: true
+#    chart: ./charts/jwt-auth
+#    values:
+#      - ./values/jwt-auth.yaml
 
 #  - # prometheus
 #    name: prometheus-init
@@ -38,19 +53,19 @@ releases:
 #    chart: ./charts/prometheus-ingress-expose
 #    values:
 #      - ./values/prometheus-ingress-expose.yaml
-
-  - # database migration
-    name: postgresql-init
-    namespace: myapp-database
-    createNamespace: true
-    chart: ./charts/postgresql-init
-    values:
-      - ./values/postgresql-init.yaml
-
-  - # app
-    name: app
-    namespace: myapp-application
-    createNamespace: true
-    chart: ./charts/app
-    values:
-      - ./values/app.yaml
+#
+#  - # database migration
+#    name: postgresql-init
+#    namespace: myapp-database
+#    createNamespace: true
+#    chart: ./charts/postgresql-init
+#    values:
+#      - ./values/postgresql-init.yaml
+#
+#  - # app
+#    name: app
+#    namespace: myapp-application
+#    createNamespace: true
+#    chart: ./charts/app
+#    values:
+#      - ./values/app.yaml
