@@ -1,6 +1,6 @@
 package com.otus.homework.my.configs;
 
-import com.otus.homework.my.component.SimpleDto;
+import com.otus.homework.my.events.Event;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -24,19 +24,19 @@ public class KafkaProducer {
 
     @Bean
     //ConcurrentKafkaListenerContainerFactory<String, String>
-    ConcurrentKafkaListenerContainerFactory<String, SimpleDto>
+    ConcurrentKafkaListenerContainerFactory<String, Event>
     kafkaListenerContainerFactory() {
         //ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        ConcurrentKafkaListenerContainerFactory<String, SimpleDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, Event> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
     @Bean
     //public ConsumerFactory<String, String>
-    public ConsumerFactory<String, SimpleDto>
+    public ConsumerFactory<String, Event>
     consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), new JsonDeserializer<>(SimpleDto.class));
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), new JsonDeserializer<>(Event.class));
     }
 
     @Bean
@@ -97,7 +97,7 @@ public class KafkaProducer {
 
 
     @Bean
-    public ProducerFactory<String, SimpleDto> producerFactoryO() {
+    public ProducerFactory<String, Event> producerFactoryO() {
         return new DefaultKafkaProducerFactory<>(producerConfigsO());
     }
 
@@ -111,7 +111,7 @@ public class KafkaProducer {
     }
 
     @Bean
-    public KafkaTemplate<String, SimpleDto> kafkaTemplateO() {
+    public KafkaTemplate<String, Event> kafkaTemplateO() {
         return new KafkaTemplate<>(producerFactoryO());
     }
 

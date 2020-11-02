@@ -1,5 +1,7 @@
 package com.otus.homework.my.component;
 
+import com.otus.homework.my.events.CreateUserEvent;
+import com.otus.homework.my.events.Event;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +30,11 @@ public class KafkaConsumer {
 //    }
 
     @KafkaListener(topics = "test1")
-    public void listen(ConsumerRecord<?, SimpleDto> cr) {
+    public void listen(ConsumerRecord<?, Event> cr) {
         log.info("MY MY msg==========: {}", cr.toString());
-        SimpleDto foo = cr.value();
-        log.info("MY MY msg BAR==========: {}", foo.bar);
+        Event foo = cr.value();
+        log.info("MY MY msg getClassName==========: {}", foo.getClassName());
+        log.info("MY MY msg getFirstName==========: {}", ((CreateUserEvent)foo).getFirstName());
         // 2020-10-31 20:16:18.225  INFO 1 --- [ntainer#0-0-C-1] c.o.homework.my.component.KafkaConsumer  : MY MY msg==========: ConsumerRecord(topic = test1, partition = 0, leaderEpoch = 0, offset = 1, CreateTime = 1604175378203, serialized key size = -1, serialized value size = 3, headers = RecordHeaders(headers = [], isReadOnly = false), key = null, value = foo)
     }
 

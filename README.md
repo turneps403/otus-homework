@@ -75,5 +75,4 @@ $ helmfile destroy
 ```
 
 #### Knoweledge
-* https://medium.com/better-programming/k8s-tips-using-a-serviceaccount-801c433d0023
-* https://www.istiobyexample.dev/response-headers/
+* https://stackoverflow.com/questions/20096297/explicit-type-casting-example-in-java
