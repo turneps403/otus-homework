@@ -1,18 +1,21 @@
 package com.otus.homework.my.resources;
 
+import com.otus.homework.my.aggregators.Aggregator;
+import com.otus.homework.my.aggregators.UserAggregator;
 import com.otus.homework.my.commands.CreateUserCommand;
 import com.otus.homework.my.events.CreateUserEvent;
 import com.otus.homework.my.events.Event;
+import com.otus.homework.my.repositories.KafkaEventRepository;
+import com.otus.homework.my.repositories.UserKafkaEventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/cmd", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -20,36 +23,20 @@ public class Command {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private KafkaTemplate<String, Event> kafkaTemplate;
+    @Qualifier("user")
+    private Aggregator uagg;
+
+    @Autowired
+    @Qualifier("user")
+    private KafkaEventRepository userEventRep;
+
 
     @PostMapping("/user")
     public Map<String, String> createUser(@RequestBody CreateUserCommand cmd) {
-        final String userID = UUID.randomUUID().toString();
-
-        CreateUserEvent ev = new CreateUserEvent();
-        ev.setUserID(userID);
-        ev.setFirstName("FirstN");
-        ev.setLastName("LastN");
-
-        kafkaTemplate.send("test1", ev);
+        uagg.convertCommandToEvent(cmd);
+        userEventRep.save(uagg.getEvent());
         log.info("All sended");
-
-        return Collections.singletonMap("userID", userID);
+        return Collections.singletonMap("userID", ((CreateUserEvent)uagg.getEvent()).getUserID());
     }
 
-    @GetMapping(value = "/aa")
-    public Map<String, String> importDialRecord(String req) {
-        String topic = "test1";
-        String message = req;
-        log.info("request test req: {}", req);
-        log.info("sending message='{}' to topic='{}'", message, topic);
-
-        log.info("All sended");
-        return Collections.singletonMap("topic", message);
-    }
-
-    @RequestMapping("/test")
-    public Map<String, String> lookup() {
-        return Collections.singletonMap("foo", "bar");
-    }
 }

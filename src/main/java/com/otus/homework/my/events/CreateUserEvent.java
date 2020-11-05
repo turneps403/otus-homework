@@ -7,16 +7,16 @@ public class CreateUserEvent extends Event {
     public String firstName;
     public String lastName;
 
-    public CreateUserEvent() {
-        super();
-    }
-
-    public CreateUserEvent(@NotNull Event e) {
-        super(e);
-        this.userID = ((CreateUserEvent) e).getUserID();
-        this.firstName = ((CreateUserEvent) e).getFirstName();
-        this.lastName = ((CreateUserEvent) e).getLastName();
-    }
+//    public CreateUserEvent() {
+//        super();
+//    }
+//
+//    public CreateUserEvent(@NotNull Event e) {
+//        super(e);
+//        this.userID = ((CreateUserEvent) e).getUserID();
+//        this.firstName = ((CreateUserEvent) e).getFirstName();
+//        this.lastName = ((CreateUserEvent) e).getLastName();
+//    }
 
     public String getUserID() {
         return userID;
@@ -40,5 +40,17 @@ public class CreateUserEvent extends Event {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return className + "{"
+                + "eventID=" + eventID.toString()
+                + ", created=" + created.toString()
+                + ", className=" + className
+                + ", userID=" + userID
+                + ", firstName=" + firstName
+                + ", lastName=" + lastName
+                + '}';
     }
 }

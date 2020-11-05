@@ -74,5 +74,17 @@ $ newman run OTUS-HWA-05.postman_collection.json --global-var "traefikMinikube=1
 $ helmfile destroy
 ```
 
+#### Curl'ing
+```
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework:31373/cmd/user' --data '{"firstName":"Ivan", "lastName":"Foog"}'
+curl -i -X GET 'http://arch.homework:31373/q/user?userID=3c024f13-c409-4bad-91f2-fe2a7276e8b1'
+```
+
+
 #### Knoweledge
+* https://www.baeldung.com/cqrs-event-sourcing-java
 * https://stackoverflow.com/questions/20096297/explicit-type-casting-example-in-java
+* https://www.baeldung.com/spring-qualifier-annotation
+* https://www.baeldung.com/spring-boot-h2-database
+* https://www.baeldung.com/spring-boot-hibernate
+* https://www.baeldung.com/spring-boot-hsqldb

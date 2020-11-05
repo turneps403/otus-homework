@@ -43,4 +43,12 @@ public abstract class Event {
     public void setClassName(String className) {
         this.className = className;
     }
+
+    @Override
+    public String toString() {
+        return className + "{"
+                + "eventID=" + eventID.toString()
+                + ", created=" + created.toString()
+                + ", className=" + className + '}';
+    }
 }

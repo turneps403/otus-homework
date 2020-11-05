@@ -1,0 +1,1 @@
+-- INSERT INTO user (ID, firstName, lastName) VALUES ("myTest100500-ID", "John", "Doe");
