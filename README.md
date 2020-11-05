@@ -77,7 +77,7 @@ $ helmfile destroy
 #### Curl'ing
 ```
 curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework:31373/cmd/user' --data '{"firstName":"Ivan", "lastName":"Foog"}'
-curl -i -X GET 'http://arch.homework:31373/q/user?userID=3c024f13-c409-4bad-91f2-fe2a7276e8b1'
+curl -i -H "Content-Type: application/json" -X GET 'http://arch.homework:31373/q/user' --data '{"userID":"6004e73e-0cff-441b-8346-8ba5db0a75ee"}'
 ```
 
 

@@ -5,3 +5,10 @@ image:
 service:
   type: NodePort
   port: 3000
+kafka:
+  consumer:
+    url: mykafka.zookaf.svc.cluster.local
+    port: 9092
+  producer:
+    url: mykafka-0.mykafka-headless.zookaf.svc.cluster.local
+    port: 9092

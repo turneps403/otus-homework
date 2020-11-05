@@ -37,3 +37,8 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 2
+          env:
+            - name: KAFKA_CONSUMER_URL
+              value: "{{ .Values.kafka.consumer.url }}:{{ .Values.kafka.consumer.port }}"
+            - name: KAFKA_PRODUCER_URL
+              value: "{{ .Values.kafka.producer.url }}:{{ .Values.kafka.producer.port }}"
