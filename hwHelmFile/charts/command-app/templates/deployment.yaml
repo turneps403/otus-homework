@@ -27,7 +27,7 @@ spec:
             httpGet:
               port: cmd-pod-port
               path: /actuator/health
-            initialDelaySeconds: 16
+            initialDelaySeconds: 14
             periodSeconds: 10
             timeoutSeconds: 10
           readinessProbe:
