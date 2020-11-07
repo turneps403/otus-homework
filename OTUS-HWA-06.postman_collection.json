@@ -1,0 +1,583 @@
+{
+	"info": {
+		"_postman_id": "99080299-5aaf-4a29-b37d-9a396508912c",
+		"name": "OTUS-HWA-06",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Service has responded with OK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e0f46ed-71fd-459e-b0e1-a5cf643ed8c2",
+						"exec": [
+							"pm.test(\"Check healthy\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"UP\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ingressDomain}}/actuator/health",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Empty user list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f749c5e1-4dd3-4fce-bb04-a49e09f06936",
+						"exec": [
+							"pm.test(\"Check status\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(Array.isArray(jsonData) ? 1 : 0).eq(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5e57d421-99e0-4a17-866c-85fd351e8679",
+						"exec": [
+							"pm.globals.set(\"User1_Email\", pm.variables.replaceIn(\"{{$randomEmail}}\"));",
+							"pm.globals.set(\"User1_Password\", pm.variables.replaceIn(\"{{$randomPassword}}\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/users",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d3f95b5-a2eb-42e6-906a-efafe745383e",
+						"exec": [
+							"pm.test(\"Check userID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userID).not.eql(\"\");",
+							"    pm.globals.set(\"$userID\", jsonData.userID);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Ivan\",\n    \"lastName\": \"Foo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/cmd/user",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"cmd",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "706834bf-3995-427a-bf2d-114d20ba3466",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userID).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check balance\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).eql(0);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/bill",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"bill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Top up balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a8582aa9-8189-4a5c-a5a8-cf5e722a0069",
+						"exec": [
+							"pm.test(\"Check ActionID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ActionID).length.not.eql( 0 );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\",\n    \"amount\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/cmd/topup",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"cmd",
+						"topup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after top up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b430cf6-e63e-46f6-94a3-eb11215a7d46",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userID).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check balance\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).gt(19);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/bill",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"bill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy something cheaper than balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9968e0bb-5d01-43c2-aa87-e77ea4eeddd9",
+						"exec": [
+							"pm.test(\"Check ActionID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ActionID).length.not.eql( 0 );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\",\n    \"amount\": 5,\n    \"operID\": \"XaomiPhone\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/cmd/operation",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"cmd",
+						"operation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Balance still is positive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "375e8231-18da-48c9-b5d1-6f7bf9cf2e7a",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userID).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check balance\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).gt(0);",
+							"    pm.globals.set(\"$balance\", jsonData.balance);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/bill",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"bill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status of success purchase",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "112fb522-2438-4df1-ab39-17bb1006bb6e",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].status).eql(\"done\");",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/operations",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"operations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy something expensive than balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "133123a0-1707-4cde-88e8-d931c9c5d0a8",
+						"exec": [
+							"pm.test(\"Check ActionID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.ActionID).length.not.eql( 0 );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\",\n    \"amount\": 100,\n    \"operID\": \"iPhone\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/cmd/operation",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"cmd",
+						"operation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Balance dont change",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a3a2f5af-05ff-43e7-a183-73279811f71a",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userID).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check balance\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).eq( pm.globals.get(\"$balance\") );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/bill",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"bill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status of failed purchase",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bd9916f8-234d-4d24-9d99-59482e67ef19",
+						"exec": [
+							"pm.test(\"Check userId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].status).eql(\"failed\");",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"{{$userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ingressDomain}}/q/operations",
+					"protocol": "http",
+					"host": [
+						"{{ingressDomain}}"
+					],
+					"path": [
+						"q",
+						"operations"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
