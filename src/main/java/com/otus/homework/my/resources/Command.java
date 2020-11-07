@@ -3,6 +3,8 @@ package com.otus.homework.my.resources;
 import com.otus.homework.my.aggregators.Aggregator;
 import com.otus.homework.my.aggregators.UserAggregator;
 import com.otus.homework.my.commands.CreateUserCommand;
+import com.otus.homework.my.commands.OperationCommand;
+import com.otus.homework.my.commands.TopUpBillingCommand;
 import com.otus.homework.my.events.CreateUserEvent;
 import com.otus.homework.my.events.Event;
 import com.otus.homework.my.repositories.KafkaEventRepository;
@@ -30,13 +32,42 @@ public class Command {
     @Qualifier("user")
     private KafkaEventRepository userEventRep;
 
+    @Autowired
+    @Qualifier("bill")
+    private Aggregator bagg;
+
+    @Autowired
+    @Qualifier("bill")
+    private KafkaEventRepository billEventRep;
+
+    @Autowired
+    @Qualifier("operation")
+    private Aggregator oagg;
+
+    @Autowired
+    @Qualifier("operation")
+    private  KafkaEventRepository operEventBill;
+
 
     @PostMapping("/user")
     public Map<String, String> createUser(@RequestBody CreateUserCommand cmd) {
         uagg.convertCommandToEvent(cmd);
         userEventRep.save(uagg.getEvent());
-        log.info("All sended");
         return Collections.singletonMap("userID", ((CreateUserEvent)uagg.getEvent()).getUserID());
+    }
+
+    @PostMapping("/topup")
+    public Map<String, String> topUpBill(@RequestBody TopUpBillingCommand cmd) {
+        bagg.convertCommandToEvent(cmd);
+        billEventRep.save(bagg.getEvent());
+        return Collections.singletonMap("ActionID", bagg.getEvent().getEventID().toString());
+    }
+
+    @PostMapping("/operation")
+    public Map<String, String> operation(@RequestBody OperationCommand cmd) {
+        oagg.convertCommandToEvent(cmd);
+        operEventBill.save(oagg.getEvent());
+        return Collections.singletonMap("ActionID", oagg.getEvent().getEventID().toString());
     }
 
 }

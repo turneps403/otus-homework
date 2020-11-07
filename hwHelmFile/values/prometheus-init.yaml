@@ -1,6 +1,0 @@
-prometheus:
-  prometheusSpec:
-    # i spend a lot of time on that
-    # https://github.com/prometheus-operator/prometheus-operator/issues/1470#issuecomment-652142735
-    serviceMonitorSelectorNilUsesHelmValues: false
-    serviceMonitorSelector: {}

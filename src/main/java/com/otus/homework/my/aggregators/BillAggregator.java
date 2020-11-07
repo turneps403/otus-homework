@@ -1,28 +1,34 @@
 package com.otus.homework.my.aggregators;
 
-import com.otus.homework.my.commands.CreateBillingCommand;
-import com.otus.homework.my.events.CreateBillingEvent;
+import com.otus.homework.my.commands.BillingCommand;
+import com.otus.homework.my.events.BillingEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 @Qualifier("bill")
-public class BillAggregator implements Aggregator<CreateBillingCommand, CreateBillingEvent> {
-    private CreateBillingEvent event;
+public class BillAggregator implements Aggregator<BillingCommand, BillingEvent> {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private BillingEvent event;
 
     @Override
-    public CreateBillingEvent getEvent() {
+    public BillingEvent getEvent() {
         return event;
     }
 
-    public void setEvent(CreateBillingEvent event) {
+    public void setEvent(BillingEvent event) {
         this.event = event;
     }
 
     @Override
-    public void convertCommandToEvent(CreateBillingCommand cmd) {
-        CreateBillingEvent ev = new CreateBillingEvent();
-        ev.setUserID(cmd.getUserID());
+    public void convertCommandToEvent(BillingCommand cmd) {
+        log.info("got command " + cmd.toString());
+        BillingEvent ev = new BillingEvent(cmd.getUserID(), cmd.getAmount());
+        log.info("create event {}", ev);
         this.setEvent(ev);
     }
+
 }

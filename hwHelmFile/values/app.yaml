@@ -1,6 +1,0 @@
-psql:
-  password: password
-  user: homeuser
-  database: homeworkdb
-postgresql:
-  serviceName: mypostgresql.myapp-database

@@ -2,13 +2,16 @@ package com.otus.homework.my.component;
 
 import com.otus.homework.my.aggregators.Aggregator;
 import com.otus.homework.my.commands.CreateBillingCommand;
-import com.otus.homework.my.dao.Bill;
+import com.otus.homework.my.dao.Operation;
 import com.otus.homework.my.dao.User;
-import com.otus.homework.my.events.CreateBillingEvent;
+import com.otus.homework.my.events.BillingEvent;
 import com.otus.homework.my.events.CreateUserEvent;
 import com.otus.homework.my.events.Event;
+import com.otus.homework.my.events.OperationEvent;
 import com.otus.homework.my.repositories.KafkaEventRepository;
+import com.otus.homework.my.repositories.OperationH2Repositry;
 import com.otus.homework.my.service.BillH2Service;
+import com.otus.homework.my.service.OperationH2Service;
 import com.otus.homework.my.service.UserH2Service;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -36,39 +39,60 @@ public class KafkaConsumer {
     @Autowired
     private BillH2Service bservice;
 
+    @Autowired
+    private OperationH2Service oservice;
+
     @KafkaListener(topics = "user", id = "user")
     public void user_listener(ConsumerRecord<?, Event> cr) {
-        log.info("user MY MY msg==========: {}", cr.toString());
-        log.info("user MY MY val==========: {}", cr.value());
-        log.info("user MY MY uservice==========: {}", uservice);
+         log.info("user ==========: {}", cr.toString());
+        // log.info("user MY MY val==========: {}", cr.value());
         User user = uservice.createUserFromEvent((CreateUserEvent) cr.value());
-        log.info("user MY MY user ==========: {}", user);
         CreateBillingCommand bill_cmd = new CreateBillingCommand(user.getID());
-        log.info("user MY MY bill_cmd ==========: {}", bill_cmd);
         bagg.convertCommandToEvent(bill_cmd);
-        log.info("user MY MY getEvent ==========: {}", bagg.getEvent());
         billEventRep.save(bagg.getEvent());
-        log.info("user MY MY end ==========");
-
-
-        // log.info("user MY MY msg getClassName==========: {}", foo.getClassName());
-        // log.info("user MY MY msg getFirstName==========: {}", ((CreateUserEvent)foo).getFirstName());
-        // 2020-10-31 20:16:18.225  INFO 1 --- [ntainer#0-0-C-1] c.o.homework.my.component.KafkaConsumer  : MY MY msg==========: ConsumerRecord(topic = test1, partition = 0, leaderEpoch = 0, offset = 1, CreateTime = 1604175378203, serialized key size = -1, serialized value size = 3, headers = RecordHeaders(headers = [], isReadOnly = false), key = null, value = foo)
     }
 
     @KafkaListener(topics = "bill", id="bill")
     public void bill_listener(ConsumerRecord<?, Event> cr) {
-        log.info("bill MY MY msg==========: {}", cr.toString());
-        CreateBillingEvent cmd = (CreateBillingEvent) cr.value();
-        if ( cr.value() instanceof CreateBillingEvent ) {
-            log.info("bill ==========: event is instace of CreateBillingEvent");
-            bservice.handle( (CreateBillingEvent) cr.value() );
+        log.info("bill ==========: {}", cr.toString());
+        BillingEvent event = (BillingEvent) cr.value();
+        Boolean res = bservice.apply(event);
+        log.info("after apply ========== {}", res);
+        if (event.getOperID() != "") {
+            if (event.getAmount() > 0) {
+                log.info("Balance was top uped");
+                // expect already success
+            } else if (event.getAmount() < 0) {
+                if (res) {
+                    log.info("Withdraw was successful");
+                    oservice.markAsSuccess(event.getOperID());
+                } else {
+                    log.warn("Withdraw was failed");
+                    oservice.markAsFailed(event.getOperID());
+                }
+            }
         } else {
-            log.info("bill ==========: event is NOT instace of CreateBillingEvent");
-            bservice.handle( (CreateBillingEvent) cr.value() );
+            if (!res) {
+                log.warn("Account already exists");
+            } else {
+                log.info("Account was successfuly created");
+            }
         }
-         log.info("bill MY MY msg getClassName==========: {}", cmd.getClassName());
-         log.info("bill MY MY msg getFirstName==========: {}", ((CreateBillingEvent) cmd).getUserID());
+
+    }
+
+    @KafkaListener(topics = "operation", id="operation")
+    public void operation_listener(ConsumerRecord<?, Event> cr) {
+        log.info("oper ==========: {}", cr.toString());
+        OperationEvent event = (OperationEvent) cr.value();
+        Operation op = oservice.create(event);
+        log.info("oper op ==========: {}", op.toString());
+        BillingEvent bevent = new BillingEvent(
+                event.getUserID(),
+                event.getAmount() > 0 ? -1 * event.getAmount() : event.getAmount(),
+                event.getOperID()
+        );
+        billEventRep.save(bevent);
     }
 
 }
