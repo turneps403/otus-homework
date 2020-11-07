@@ -1,74 +1,47 @@
 #### задание
-**Backend for frontends. Apigateway**
-Реализовать сценарий "Изменение и просмотр данных в профиле клиента".
-Пользователь регистрируется. Заходит под собой и по определенному урлу получает данные о своем профиле. Может поменять данные в профиле. Данные профиля для чтения и редактирования не должны быть доступны другим клиентам (аутентифицированным или нет).
+**Stream processing**
+**Реализовать сервис заказа. Сервис биллинга. Сервис нотификаций.**
 
-На выходе должны быть
-1. описание архитектурного решения и схема взаимодействия сервисов (в виде картинки)
-2. команда установки приложения (из helm-а или из манифестов). Обязательно указать в каком namespace нужно устанавливать.
-* команда установки api-gateway, если он отличен от nginx-ingress.
-3. тесты постмана, которые прогоняют сценарий:
-* регистрация пользователя 1
-* проверка, что изменение и получение профиля пользователя недоступно без логина
-* вход пользователя 1
-* изменение профиля пользователя 1
-* проверка, что профиль поменялся
-* выход* (если есть)
-* регистрация пользователя 2
-* вход пользователя 2
-* проверка, что пользователь2 не имеет доступа на чтение и редактирование профиля пользователя1.
+При создании пользователя, необходимо создавать аккаунт в сервисе биллинга. В сервисе биллинга должна быть возможность положить деньги на аккаунт и снять деньги.
 
-В тестах обязательно
-* наличие {{baseUrl}} для урла
-* использование домена arch.homework в качестве initial значения {{baseUrl}}
-* использование сгенерированных случайно данных в сценарии
-* отображение данных запроса и данных ответа при запуске из командной строки с помощью newman.
+Пользователь может создать заказ. У заказа есть параметр - цена заказа.
+Заказ происходит в 2 этапа:
+1. сначала снимаем деньги с пользователя с помощью сервиса биллинга
+2. отсылаем пользователю сообщение на почту с результатами оформления заказа. Если биллинг подтвердил платеж, должно отослаться письмо счастья. Если нет, то письмо горя.
 
 #### Решение
-домашнее задание сделано на основе [предыдущего](https://github.com/turneps403/otus-homework/tree/HWA-03)
+Из-за ограничений по памяти, домашняя работа выполнена независимо от предыдущих работ.
+По этой же причине, приложение запускается в одном Pod и, представляет из себя монолит без разбиения на модули.
 
-В качестве Api Gateway был выбран `Traefik` и, реализована аутентификация с помощью `JWT`.
-Средством для перехвата трафика выбран middleware `ForwardAuth`, изолирующий знание
-о механизме авторизации для основного приложения.
+За основу было взято описание [CQRS event sourcing](https://www.baeldung.com/cqrs-event-sourcing-java)
+![](myFiles/tSchema.png)
+* В качестве Event store/propagation была выбрана ```Kafka```
+* Projector применяет события к ```H2``` sql-like базе
 
-Traefik поднимается в отдельном неймспейсе и, работает с Service других неймсейсов через 
-их описание с помощью External. Таким образом, встраивание Traefik происходит прозрачно.
+Таким образом, реализуется ```eventual consistency``` 
 
-![](myFiles/simple-graph.png)
+#### Сложности
+* большую часть времени съела сама разработка на spring
 
-#### мой доп github код для домашки
-- [traefik + middleware](https://github.com/turneps403/helmfile-traefik-v2-minikube)
-- [app for jwt](https://github.com/turneps403/java-crumbs/tree/jwt-middleware)
+#### Tests
+![](myFiles/tList.png)
 
-#### ньюансы
-я так и не смог найти решения, как заэкспозить Traefik на minikube на 80 порт.
-поэтому, прописать minikube ip в `/etc/hosts` не является решением.
-в тестах Postman я учел эту особенность.
+![](myFiles/tRes.png)
 
 #### Запуск & Проверка
 чекаутим проект
 ```
-$ git clone --single-branch --branch HWA-05 https://github.com/turneps403/otus-homework.git HWA-05
+$ git clone --single-branch --branch HWA-06 https://github.com/turneps403/otus-homework.git HWA-06
 $ cd HWA-05
 ``` 
-запускаем Helm манифесты
+запускаем Helm манифесты (не забываем про ```addon ingress```)
 ```
 $ cd cd hwHelmFile
 $ helmfile sync
+... wait
+$ cd -
+$ newman run OTUS-HWA-06.postman_collection.json --global-var "ingressDomain=arch.homework"
 ```
-запрашивем у мини-кубика урлы для Traefik
-```
-$ minikube service mytraefik --namespace=traefikns --url
-> http://192.168.64.28:30926
-> http://192.168.64.28:32675
-```
-![](myFiles/services.png)
-забираем ip и port для запуска тестов Postman
-```
-$ newman run OTUS-HWA-05.postman_collection.json --global-var "traefikMinikube=192.168.64.28:30282"
-```
-![](myFiles/postman.png)
-![](myFiles/newman.png)
 выключаем Helm манифесты
 ```
 $ helmfile destroy
@@ -76,10 +49,13 @@ $ helmfile destroy
 
 #### Curl'ing
 ```
-curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework:31373/cmd/user' --data '{"firstName":"Ivan", "lastName":"Foog"}'
-curl -i -H "Content-Type: application/json" -X GET 'http://arch.homework:31373/q/user' --data '{"userID":"6004e73e-0cff-441b-8346-8ba5db0a75ee"}'
-```
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework/cmd/user' --data '{"firstName":"Ivan", "lastName":"Foog"}'
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework/cmd/topup' --data '{"userID":"e9779fdc-01a2-4500-abf6-9584319694d0","amount": 20}'
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework/cmd/operation' --data '{"userID":"e9779fdc-01a2-4500-abf6-9584319694d0", "amount": 10, "operID": "fooBarOperID"}'
 
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework/q/bill' --data '{"userID":"e9779fdc-01a2-4500-abf6-9584319694d0"}'
+curl -i -H "Content-Type: application/json" -X POST 'http://arch.homework/q/operations' --data '{"userID":"e9779fdc-01a2-4500-abf6-9584319694d0"}'
+```
 
 #### Knoweledge
 * https://www.baeldung.com/cqrs-event-sourcing-java
