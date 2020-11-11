@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
+    id "org.springframework.boot" version "2.3.4.RELEASE"
+}
+
+group 'org.otus.hw07'
+version '1.0'
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    //implementation('org.springframework.boot:spring-boot-starter-jdbc')
+    // implementation('org.springframework.boot:spring-boot-starter-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+    implementation('org.hibernate:hibernate-core')
+    // implementation('org.hibernate:hibernate-entitymanager')
+    implementation('org.xerial:sqlite-jdbc')
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    testImplementation 'junit:junit'
+}
+
