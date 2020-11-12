@@ -1,0 +1,361 @@
+{
+	"info": {
+		"_postman_id": "3250315f-0a4b-4558-bc46-481b8142fdc7",
+		"name": "OTUS-HWA-07",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Service has responded with OK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d6244e9d-3607-4346-b9d3-c49f764ef40f",
+						"exec": [
+							"pm.test(\"Check healthy\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"UP\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/actuator/health",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5bb8302d-ace0-400b-8189-cc6e8b3a00a4",
+						"exec": [
+							"pm.test(\"Check userID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(typeof jsonData).eq(\"object\");",
+							"    pm.globals.set(\"$userID\", jsonData.id);",
+							"    pm.globals.set(\"$userEmail\", jsonData.email);",
+							"    pm.globals.set(\"$userVersion\", jsonData.version);",
+							"});",
+							"",
+							"pm.test(\"Check version\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.version).eq(1);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5286d50d-42b8-440d-8dbf-26a22b6b0b10",
+						"exec": [
+							"pm.globals.set(\"User1_Email\", pm.variables.replaceIn(\"{{$randomEmail}}\"));",
+							"pm.globals.set(\"User1_Password\", pm.variables.replaceIn(\"{{$randomPassword}}\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\":\"Ivan\", \n    \"lastName\":\"Foog\", \n    \"email\": \"{{$randomEmail}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2369151-b2b7-46e6-83fe-756d59c5cb6b",
+						"exec": [
+							"pm.test(\"Check userID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(typeof jsonData).eq(\"object\");",
+							"    pm.expect(jsonData.id).eq( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/{{$userID}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fail update (version dont match)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8b39dde-cad5-4954-aef8-6dca3e21daf4",
+						"exec": [
+							"pm.test(\"Check user dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check version dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.version).eql( pm.globals.get(\"$userVersion\") );",
+							"});",
+							"",
+							"pm.test(\"Check email dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).eql( pm.globals.get(\"$userEmail\") );",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{$randomEmail}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"version\": {{$randomInt}},\n    \"id\": {{$userID}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/{{$userID}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Success update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "01887fa3-71d4-403f-a391-7c5f3f2de22f",
+						"exec": [
+							"pm.test(\"Check user dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).eql( pm.globals.get(\"$userID\") );",
+							"});",
+							"",
+							"pm.test(\"Check version dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.version).not.eql( pm.globals.get(\"$userVersion\") );",
+							"    pm.globals.set(\"$userVersion\", jsonData.version);",
+							"});",
+							"",
+							"pm.test(\"Check email dont changed\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.email).not.eql( pm.globals.get(\"$userEmail\") );",
+							"    pm.globals.set(\"$userEmail\", jsonData.email);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{$randomEmail}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"version\": {{$userVersion}},\n    \"id\": {{$userID}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/{{$userID}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ce409a1-9172-4ede-b531-849d0d462e31",
+						"exec": [
+							"pm.test(\"Check status\", function () {",
+							"    var jsonData = pm.response.code;",
+							"    pm.expect(pm.response.code).eql( 204 );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/{{$userID}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check after delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2b8258e-f8d4-4d70-b67d-7e0ceb854c38",
+						"exec": [
+							"pm.test(\"Check response status\", function () {",
+							"    pm.expect(pm.response.code).eq(404);",
+							"});",
+							"",
+							"pm.test(\"[INFO] Response: \" + JSON.stringify(pm.response.json()), true)",
+							"setTimeout(function(){}, [500]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/{{$userID}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$userID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

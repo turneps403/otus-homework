@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deployment
+  labels:
+    purpose: {{ .Chart.Name }}-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      purpose: {{ .Chart.Name }}-pod
+  template:
+    metadata:
+      labels:
+        purpose: {{ .Chart.Name }}-pod
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - name: cmd-pod-port
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: cmd-pod-port
+              path: /actuator/health
+            initialDelaySeconds: 16
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: cmd-pod-port
+              path: /actuator/info
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 2
