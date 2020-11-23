@@ -9,3 +9,4 @@ All homework will be done in branches with prefixes **HWS-[number]** (like contr
 All homework will be done in branches with prefixes **HWJ-[number]** (like contraction from *"homework java"*)
 
 https://spring.io/guides/gs/multi-module/
+https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update

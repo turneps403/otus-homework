@@ -1,0 +1,14 @@
+dependencies {
+    implementation('org.hibernate:hibernate-core')
+    implementation('org.slf4j:slf4j-api')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    testImplementation 'junit:junit'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}

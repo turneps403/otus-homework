@@ -8,6 +8,8 @@ dependencies {
     implementation('org.xerial:sqlite-jdbc')
     implementation('org.springframework.boot:spring-boot-starter-jdbc')
 
+    implementation project(":hw09-library")
+
     testImplementation 'junit:junit'
 }
 
