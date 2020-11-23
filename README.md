@@ -7,3 +7,5 @@ All homework will be done in branches with prefixes **HWS-[number]** (like contr
 
 #### Java Developer
 All homework will be done in branches with prefixes **HWJ-[number]** (like contraction from *"homework java"*)
+
+https://spring.io/guides/gs/multi-module/

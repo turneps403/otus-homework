@@ -1,0 +1,30 @@
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+
+    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+    implementation('org.hibernate:hibernate-core')
+
+    implementation('org.xerial:sqlite-jdbc')
+    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+
+    testImplementation 'junit:junit'
+}
+
+//jar {
+//    archiveBaseName = 'wallet-app'
+//    archiveVersion = '0.1'
+//
+//    manifest {
+//        attributes "Main-Class": "org.otus.hw.WalletApp"
+//    }
+//
+//    from {
+//        // include all dependencies
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
+
+bootJar {
+    enabled = true
+}
